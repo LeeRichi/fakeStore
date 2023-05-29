@@ -4,10 +4,17 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { setLogin } from "../store/userSlice";
 import { useDispatch } from "react-redux";
 
+
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse, GoogleCredentialResponse } from '@react-oauth/google';
+import jwt_decode from "jwt-decode";
+
+
 import SignUp from "./SignUp";
 
-
-
+interface JwtPayload {
+  email: string;
+  password: string;
+}
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -15,11 +22,6 @@ const LogIn = () => {
   const [signUp, setSignUp] = useState(false)
 
   const dispatch = useDispatch();
-
-  // const handleLogin = () => {
-  //   // Perform login logic here
-  //   dispatch(setLogin({ email: email, password: password, login: true }));
-  // };
 
   const handleLogin = () => {
     const auth = getAuth();
@@ -30,7 +32,6 @@ const LogIn = () => {
         console.log("User logged in:", user);
         // Dispatch the setLogin action
         dispatch(setLogin({ email: email, password: password, login: true }));
-        // Perform any additional actions after successful login
       })
       .catch((error) => {
         // Handle login error
@@ -52,6 +53,19 @@ const LogIn = () => {
     console.log(signUp)
   };
 
+  function handleLoginSuccess(credentialResponse: GoogleCredentialResponse) {
+    const credential = credentialResponse.credential;
+    if (credential) {
+      const userObject: JwtPayload = jwt_decode(credential)
+      console.log(userObject)
+      setEmail(userObject.email)
+      dispatch(setLogin({ email: userObject.email, password: password, login: true }));
+    }
+  }
+
+  const handleLoginError = () => {
+    console.log('Login failed');
+  };
 
   return (
     <>
@@ -67,6 +81,9 @@ const LogIn = () => {
           <Typography variant="h4" gutterBottom>
             Log In
           </Typography>
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID!}>
+            <GoogleLogin onSuccess={handleLoginSuccess} onError={handleLoginError} />
+          </GoogleOAuthProvider> 
           <TextField
             label="Email"
             value={email}
