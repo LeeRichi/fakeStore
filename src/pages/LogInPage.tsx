@@ -1,4 +1,3 @@
-import React from 'react'
 import ProfilePage from '../pages/ProfilePage'
 import LogIn from '../components/LogIn'
 
@@ -10,7 +9,6 @@ import { LogInPageTypes } from '../types/LogInPage'
 const LogInPage = () =>
 {
   const state = useSelector((state: LogInPageTypes) => state.user);
-  console.log(state)
 
   return (
     <div>

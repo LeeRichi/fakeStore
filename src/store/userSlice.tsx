@@ -14,8 +14,6 @@ interface UserState {
 
 const initialState: UserState = {
   profile: {
-    // name: "",
-    // age: 0,
     email: "",
     password: "",
     login: false,
