@@ -5,9 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { updateQuantity, removeFromCart, CartItem } from '../store/cartSlice';
-
-
-
+import { Link } from 'react-router-dom'; 
 
 interface Product {
   id: number;
@@ -36,9 +34,11 @@ const Cart: React.FC = () => {
       </Typography>
       <div style={{ display: "flex" }}>
         <div style={{ flex: 1 }}>
-          {cartItems.map((item) => (
-            <Card key={item.id} style={{ display: "flex", marginBottom: "16px", width: "600px" }}>
-              <CardMedia
+          {cartItems.length > 0 ? (
+            cartItems.map((item) => (
+              <Card key={item.id} style={{ display: "flex", marginBottom: "16px", width: "600px" }}>
+                {/* Rest of the card content */}
+                <CardMedia
                 component="img"
                 style={{
                   width: "250px",
@@ -87,6 +87,67 @@ const Cart: React.FC = () => {
                   </Button>
                 </div>
               </CardContent>
+              </Card>
+            ))
+          ) : (
+              <div>
+                <Typography>Your cart is empty</Typography><br/>
+                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Button variant="outlined">back to shopping</Button>
+                </Link>
+              </div>
+          )}
+          {cartItems.map((item) => (
+            <Card key={item.id} style={{ display: "flex", marginBottom: "16px", width: "600px" }}>
+              {/* <CardMedia
+                component="img"
+                style={{
+                  width: "250px",
+                  height: "180px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+                image={item.images[0]}
+                alt={item.title}
+              />
+              <CardContent style={{ flex: 1, paddingLeft: "16px" }}>
+                <Typography variant="h6" component="div" mb={1}>
+                  {item.title}
+                </Typography>
+                <Typography variant="body1" color="primary">
+                  Price: ${item.price}
+                </Typography>
+                <div style={{ display: "flex", alignItems: "center", marginTop: "16px" }}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    startIcon={<RemoveIcon />}
+                    onClick={() => handleQuantityChange(item, item.quantity - 1)}
+                  />
+                  <Typography variant="body1" style={{ margin: "0 8px" }}>
+                    {item.quantity}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    startIcon={<AddIcon />}
+                    onClick={() => handleQuantityChange(item, item.quantity + 1)}
+                  />
+                  <Button
+                    variant="text"
+                    color="secondary"
+                    size="small"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDeleteItem(item)}
+                    style={{ marginLeft: "auto" }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent> */}
             </Card>
           ))}
         </div>

@@ -1,38 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../store/productSlice";
+import { fetchProducts, fetchProductsByJoin } from "../store/productSlice";
 import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { addToCart } from "../store/cartSlice";
 
+import Sidebar from "../components/Sidebar";
+import Filterbar from "../components/Filterbar";
+import { log } from "console";
+
+
 const Home = () =>
 {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.products);
+  const products = useSelector((state: any) => state.products.products);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [categoryId, setCategoryId] = useState<string[]>([]);
+  const [searchProps, setSearchProps] = useState<string>('');
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(999);
   const productsPerPage = 25;
+  const [sortingOption, setSortingOption] = useState('');
+  const [sortedProducts, setSortedProducts] = useState<any[]>([]);
 
-  const handleAddToCart = (e, product) => {
+ 
+  const handleAddToCart = (e: any, product: any) => {
     e.preventDefault();
     dispatch(addToCart(product));
   };
-  
+
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(fetchProductsByJoin({ categoryId: String(categoryId), minPrice, maxPrice, searchProps }) as any);
+  }, [categoryId, minPrice, maxPrice, searchProps]);  
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  
+  useEffect(() => {
+    let sortedProductsCopy = [...products];
+    if (sortingOption) {
+      switch (sortingOption) {
+        case 'price-lowest':
+          sortedProductsCopy = sortedProductsCopy.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-highest':
+          sortedProductsCopy = sortedProductsCopy.sort((a, b) => b.price - a.price);
+          break;
+        case 'name':          
+          sortedProductsCopy = sortedProductsCopy.sort((a, b) => {
+            const nameA = a.title || '';
+            const nameB = b.title || '';
+            return nameA.localeCompare(nameB);
+          });
+          break;
+        default:
+          break;
+      }
+    }
+    setSortedProducts(sortedProductsCopy);
+  }, [products, sortingOption]);
     
   return (
     <Box display="flex">
-      {/* <Sidebar categories={categories} setCategories={setCategories} fetchProducts={fetchProducts} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} /> */}
+      <Sidebar categoryId={categoryId} setCategoryId={setCategoryId}/>
       <Box flex="1" p={2}>
-        {/* <TopBar searchProps={searchProps} setSearchProps={setSearchProps} minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} /> */}
+        <Filterbar searchProps={searchProps} setSearchProps={setSearchProps} minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} sortingOption={sortingOption} setSortingOption={setSortingOption} />
         <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2}>
-          {currentProducts.map((product) => (
+          {currentProducts.map((product: any) => (
             <Card key={product.id} sx={{ width: 300 }}>
               <Link to={`/products/${product.id}`}>
                 <Box sx={{ height: 200, overflow: 'hidden' }}>
@@ -51,6 +87,9 @@ const Home = () =>
                   <Button variant="contained" color="primary" onClick={(e) => handleAddToCart(e, product)}>
                       Add to Cart
                   </Button>
+                  <Typography variant="h6" color="primary">
+                    category: ${product.category.id}
+                  </Typography>
                 </CardContent>
               </Link>
             </Card>
@@ -63,9 +102,8 @@ const Home = () =>
           >
             Previous Page
           </Button>
-          {/* this line show the pages */}
           {Array(Math.ceil(products.length / productsPerPage))
-          .fill()
+          .fill(null)
           .map((_, index) => (
             <Button
               key={index}
