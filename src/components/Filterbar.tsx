@@ -11,16 +11,9 @@ import {
   OutlinedInput,
   Collapse,
 } from '@mui/material';
-// import { fetchProductsByPrice, fetchProductsByJoin,  sortByPriceLowest, sortByPriceHighest, sortByName } from '../store/actions/productActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { ChangeEvent } from 'react';
 import { SelectChangeEvent } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
-import { sortProductsByName, sortProductsByPriceLowest, sortProductsByPriceHighest } from '../store/productSlice';
-
-
 
 interface SidebarProps {
   searchProps: string;
@@ -45,8 +38,11 @@ const Filterbar: React.FC<SidebarProps> = ({
 }) => {
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
-  const [isSearchTextEmpty, setIsSearchTextEmpty] = useState(true);
-  const [clearSort, setClearSort] = useState('-')
+  const [selectKey, setSelectKey] = useState('')  
+
+  useEffect(() => {
+    setSelectKey(sortingOption); 
+  }, [sortingOption]);
   
   const handleMinInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
@@ -61,7 +57,6 @@ const Filterbar: React.FC<SidebarProps> = ({
   const handleSearchPropsChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchInput(value);
-    setIsSearchTextEmpty(value === '');
   };
 
   const handleSearchPropsClick = () =>
@@ -74,13 +69,11 @@ const Filterbar: React.FC<SidebarProps> = ({
     setSortingOption(option)
   }
 
-
-  //clean up button function
   const handleClearClick = () => {
       setSearchInput('');
-      setIsSearchTextEmpty(true);
       setSearchProps('');
-      setClearSort('')
+      setSortingOption('')
+      console.log(sortingOption);
   };
 
   return (
@@ -131,10 +124,11 @@ const Filterbar: React.FC<SidebarProps> = ({
         <FormControl variant="outlined" size="small" sx={{ width: '100px' }}>
           <InputLabel id="sort-by-label">Sort By</InputLabel>
           <Select
+            key={selectKey}
             labelId="sort-by-label"
             id="sort-by"
             onChange={handleSortByChange}
-            value={clearSort}
+            value={sortingOption}
             label="Sort By"
           >
             <MenuItem value="">-</MenuItem>

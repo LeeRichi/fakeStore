@@ -4,10 +4,8 @@ import { fetchProducts, fetchProductsByJoin } from "../store/productSlice";
 import { Box, Card, CardContent, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { addToCart } from "../store/cartSlice";
-
 import Sidebar from "../components/Sidebar";
 import Filterbar from "../components/Filterbar";
-import { log } from "console";
 
 
 const Home = () =>
@@ -24,7 +22,6 @@ const Home = () =>
   const [sortingOption, setSortingOption] = useState('');
   const [sortedProducts, setSortedProducts] = useState<any[]>([]);
 
- 
   const handleAddToCart = (e: any, product: any) => {
     e.preventDefault();
     dispatch(addToCart(product));
@@ -69,8 +66,8 @@ const Home = () =>
         <Filterbar searchProps={searchProps} setSearchProps={setSearchProps} minPrice={minPrice} setMinPrice={setMinPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} sortingOption={sortingOption} setSortingOption={setSortingOption} />
         <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2}>
           {currentProducts.map((product: any) => (
-            <Card key={product.id} sx={{ width: 300 }}>
-              <Link to={`/products/${product.id}`}>
+            <Card key={product.id} sx={{ width: 300 }} component={Link} to={`/productDetail/${product.id}`}>
+              {/* <Link to={`/products/${product.id}`}> */}
                 <Box sx={{ height: 200, overflow: 'hidden' }}>
                   <img src={product.category.image} alt="Product" style={{ width: '100%', objectFit: 'cover' }} />
                 </Box>
@@ -84,14 +81,14 @@ const Home = () =>
                   <Typography variant="h6" color="primary">
                     Price: ${product.price}
                   </Typography>
-                  <Button variant="contained" color="primary" onClick={(e) => handleAddToCart(e, product)}>
-                      Add to Cart
-                  </Button>
                   <Typography variant="h6" color="primary">
-                    category: ${product.category.id}
+                    id: ${product.id}
                   </Typography>
+                  {/* <Button variant="contained" color="primary" onClick={(e) => handleAddToCart(e, product)}>
+                      Add to Cart
+                  </Button> */}
                 </CardContent>
-              </Link>
+              {/* </Link> */}
             </Card>
           ))}
         </Box>

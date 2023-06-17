@@ -1,6 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction, createAction } from "@reduxjs/toolkit";
-import { useDispatch } from 'react-redux';
-
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -50,7 +48,6 @@ export const fetchProductsByJoin = createAsyncThunk<ProductData[], FetchProducts
   'products/fetchProductsByJoin',
   async ({ categoryId, minPrice, maxPrice, searchProps }, { rejectWithValue }) => {
     try {
-      console.log(searchProps);
       const url = `https://api.escuelajs.co/api/v1/products/?price_min=${minPrice}&price_max=${maxPrice}&title=${searchProps}&categoryId=${categoryId}`;
       const response = await fetch(url);
       if (!response.ok) {
@@ -104,7 +101,6 @@ const productSlice = createSlice({
       });
   },
 });
-
 
 export const sortProductsByPriceLowest = createSlice({
   name: "products/sortByPriceLowest",

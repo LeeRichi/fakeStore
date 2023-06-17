@@ -1,14 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserProfile {
-  // name: string;
-  // age: number;
+export interface UserProfile {
   email: string;
   password: string;
   login: boolean;
+  position: 'admin' | 'member';
 }
 
-interface UserState {
+export interface UserState {
   profile: UserProfile;
 }
 
@@ -17,6 +16,7 @@ const initialState: UserState = {
     email: "",
     password: "",
     login: false,
+    position: "member"
   },
 };
 

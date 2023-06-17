@@ -4,10 +4,8 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { setLogin } from "../store/userSlice";
 import { useDispatch } from "react-redux";
 
-
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse, GoogleCredentialResponse } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
-
 
 import SignUp from "./SignUp";
 
@@ -31,7 +29,7 @@ const LogIn = () => {
         const user = userCredential.user;
         console.log("User logged in:", user);
         // Dispatch the setLogin action
-        dispatch(setLogin({ email: email, password: password, login: true }));
+        dispatch(setLogin({ email: email, password: password, login: true, position: "member" }));
       })
       .catch((error) => {
         // Handle login error
@@ -50,7 +48,6 @@ const LogIn = () => {
   const handleSignUp = () =>
   {
     setSignUp((prevState) => !prevState);
-    console.log(signUp)
   };
 
   function handleLoginSuccess(credentialResponse: GoogleCredentialResponse) {
@@ -59,7 +56,7 @@ const LogIn = () => {
       const userObject: JwtPayload = jwt_decode(credential)
       console.log(userObject)
       setEmail(userObject.email)
-      dispatch(setLogin({ email: userObject.email, password: password, login: true }));
+      dispatch(setLogin({ email: userObject.email, password: password, login: true, position: "member" }));
     }
   }
 

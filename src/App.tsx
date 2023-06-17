@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import productSlice from './store/productSlice'
 import cartSlice from './store/cartSlice'
+import ProductDetail from './pages/ProductDetail'
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LogInPage />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/productDetail/:id" element={<ProductDetail />} />
         </Routes>
       </Router>
     </Provider>

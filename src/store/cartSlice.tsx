@@ -14,44 +14,20 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
       const product = action.payload;
+      console.log(product);
+
+      const { id, quantity } = action.payload;
+      console.log(quantity);
+      
+      
       const existingProduct = state.find((item) => item.id === product.id);
       if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.quantity += quantity;
       } else {
         state.push({ ...product, quantity: 1 });
       }
     },
-    // removeFromCart: (state, action: PayloadAction<number>) => {
-    //   const productId = action.payload;
-    //   const index = state.findIndex((item) => item.id === productId);
-    //   if (index !== -1) {
-    //     const product = state[index];
-    //     if (product.quantity > 1) {
-    //       product.quantity -= 1;
-    //     } else {
-    //       state.splice(index, 1);
-    //     }
-    //   }
-    // },
-    // removeFromCart: (state: CartItem[], action: PayloadAction<number>) => {
-    //   const productId = action.payload;
-    //   const index = state.findIndex((item) => item.id === productId);
-    //   if (index !== -1) {
-    //     const product = state[index];
-    //     if (product.quantity > 1) {
-    //       product.quantity -= 1;
-    //     } else {
-    //       state.splice(index, 1);
-    //     }
-    //   }
-    // }
-    // removeFromCart: (state, action: PayloadAction<number>) => {
-    //   const itemId = action.payload;
-    //   const index = state.findIndex((item) => item.id === itemId);
-    //   if (index !== -1) {
-    //     state.splice(index, 1);
-    //   }
-    // },
+    
     removeFromCart: (state, action) => {
       const itemId = action.payload;
       const confirmed = window.confirm('Do you want to delete the item?');
